@@ -15,7 +15,7 @@ pipeline {
         checkout scm
         script {
           // Short git SHA for tagging
-          env.GIT_SHA = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          env.GIT_SHA = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
           env.IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_SHA}"
         }
       }
@@ -23,7 +23,7 @@ pipeline {
 
     stage('Build & Test (Maven)') {
       steps {
-        sh 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
+        bat 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
       }
       post {
         always {
@@ -62,7 +62,7 @@ pipeline {
     }
     cleanup {
       // keep the node tidy
-      sh 'docker image prune -f || true'
+      bat 'docker image prune -f || true'
     }
   }
 }
