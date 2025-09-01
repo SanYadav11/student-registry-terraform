@@ -3,7 +3,7 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_REPO        = 'santuk/student-registry '   // <-- change
+    DOCKER_HUB_REPO        = 'santuk/student-registry'   // <-- change
     DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'               // <-- matches your Jenkins cred ID
   }
 
