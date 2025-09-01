@@ -23,7 +23,7 @@ pipeline {
 
     stage('Build & Test (Maven)') {
       steps {
-        bat 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
+        sh 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
       }
       post {
         always {
