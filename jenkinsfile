@@ -1,10 +1,10 @@
-// Jenkinsfile (Maven + Docker)
+// Jenkinsfile (Maven + Docker + Login Test)
 pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_REPO        = 'santuk/student-registry'   // lowercase & valid
-    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'
+    DOCKER_HUB_REPO        = 'santuk/student-registry'   // Docker Hub repo (must exist, lowercase)
+    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'     // Jenkins credential ID
   }
 
   stages {
@@ -21,8 +21,8 @@ pipeline {
           }
           // Ensure lowercase to satisfy Docker regex
           env.GIT_SHA = gitSha.toLowerCase()
-          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"
-        }
+          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"       
+      }
       }
     }
 
@@ -52,11 +52,25 @@ pipeline {
       }
     }
 
+    stage('Test Docker Hub Login') {
+      steps {
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+            if (isUnix()) {
+              sh 'echo "✅ Successfully logged in to Docker Hub"'
+            } else {
+              bat 'echo ✅ Successfully logged in to Docker Hub'
+            }
+          }
+        }
+      }
+    }
+
     stage('Push to Docker Hub') {
       steps {
         script {
           docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-            dockerImage.push(env.IMAGE_TAG) // push tagged image
+            dockerImage.push(env.IMAGE_TAG) // push with build tag
             dockerImage.push('latest')      // also push :latest
           }
         }
