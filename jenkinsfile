@@ -53,7 +53,6 @@ pipeline {
             bat """
               docker login -u %DOCKER_USER% -p %DOCKER_PASS%
               docker push ${DOCKER_HUB_REPO}:${env.IMAGE_TAG}
-              docker push ${DOCKER_HUB_REPO}:latest
             """
           }
         }
