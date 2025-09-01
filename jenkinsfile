@@ -16,8 +16,8 @@ pipeline {
         script {
           // Short git SHA for tagging
           env.GIT_SHA = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-          env.IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_SHA}"
-        }
+          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"     
+       }
       }
     }
 
