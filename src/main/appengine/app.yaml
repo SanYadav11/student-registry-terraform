@@ -1,0 +1,11 @@
+runtime: java17
+instance_class: F1
+env: standard
+
+env_variables:
+  SPRING_DATASOURCE_URL: jdbc:mysql://google/studentdb?cloudSqlInstance=student-registry-466814:us-central1:student-mysql-repo&socketFactory=com.google.cloud.sql.mysql.SocketFactory&useSSL=false
+  SPRING_DATASOURCE_USERNAME: student
+  SPRING_DATASOURCE_PASSWORD: student
+
+beta_settings:
+  cloud_sql_instances: student-registry-466814:us-central1:student-mysql-repo
