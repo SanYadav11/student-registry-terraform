@@ -1,13 +1,11 @@
-// Jenkinsfile (Maven)
+// Jenkinsfile (Maven + Docker)
 pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_REPO        = 'santuk/student-registry'   // <-- change
-    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'               // <-- matches your Jenkins cred ID
+    DOCKER_HUB_REPO        = 'santuk/student-registry'   // lowercase & valid
+    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'
   }
-
- 
 
   stages {
     stage('Checkout') {
@@ -15,7 +13,14 @@ pipeline {
         checkout scm
         script {
           // Short git SHA for tagging
-          env.GIT_SHA = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          def gitSha
+          if (isUnix()) {
+            gitSha = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          } else {
+            gitSha = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          }
+          // Ensure lowercase to satisfy Docker regex
+          env.GIT_SHA = gitSha.toLowerCase()
           env.IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_SHA}"
         }
       }
@@ -23,7 +28,13 @@ pipeline {
 
     stage('Build & Test (Maven)') {
       steps {
-        bat 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
+        script {
+          if (isUnix()) {
+            sh 'mvn -B -DskipTests=false clean verify'
+          } else {
+            bat 'mvn -B -DskipTests=false clean verify'
+          }
+        }
       }
       post {
         always {
@@ -34,22 +45,19 @@ pipeline {
     }
 
     stage('Build Docker Image') {
-  
       steps {
         script {
-          // Build from Dockerfile at repo root
           dockerImage = docker.build("${DOCKER_HUB_REPO}:${env.IMAGE_TAG}")
         }
       }
     }
 
     stage('Push to Docker Hub') {
-
       steps {
         script {
           docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-            dockerImage.push()          // pushes :IMAGE_TAG
-            dockerImage.push('latest')  // also push :latest
+            dockerImage.push(env.IMAGE_TAG) // push tagged image
+            dockerImage.push('latest')      // also push :latest
           }
         }
       }
@@ -61,8 +69,13 @@ pipeline {
       echo "✅ Pushed ${DOCKER_HUB_REPO}:${env.IMAGE_TAG} and :latest"
     }
     cleanup {
-      // keep the node tidy
-      bat 'docker image prune -f || true'
+      script {
+        if (isUnix()) {
+          sh 'docker image prune -f || true'
+        } else {
+          bat 'docker image prune -f || true'
+        }
+      }
     }
   }
 }
