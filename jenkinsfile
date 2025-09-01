@@ -21,7 +21,7 @@ pipeline {
           }
           // Ensure lowercase to satisfy Docker regex
           env.GIT_SHA = gitSha.toLowerCase()
-          env.IMAGE_TAG = "${env.BUILD_NUMBER}-${env.GIT_SHA}"
+          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"
         }
       }
     }
