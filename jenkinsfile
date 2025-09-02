@@ -1,13 +1,11 @@
-// Jenkinsfile (Maven)
+// Jenkinsfile (Maven + Docker + Login Test)
 pipeline {
   agent any
 
   environment {
-    DOCKER_HUB_REPO        = 'santuk/student-registry'   // <-- change
-    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'               // <-- matches your Jenkins cred ID
+    DOCKER_HUB_REPO        = 'santuk/student-registry'   // Docker Hub repo (must exist, lowercase)
+    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'     // Jenkins credential ID
   }
-
- 
 
   stages {
     stage('Checkout') {
@@ -15,15 +13,28 @@ pipeline {
         checkout scm
         script {
           // Short git SHA for tagging
-          env.GIT_SHA = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"     
-       }
+          def gitSha
+          if (isUnix()) {
+            gitSha = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          } else {
+            gitSha = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          }
+          // Ensure lowercase to satisfy Docker regex
+          env.GIT_SHA = gitSha.toLowerCase()
+          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"       
+      }
       }
     }
 
     stage('Build & Test (Maven)') {
       steps {
-        bat 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
+        script {
+          if (isUnix()) {
+            sh 'mvn -B -DskipTests=false clean verify'
+          } else {
+            bat 'mvn -B -DskipTests=false clean verify'
+          }
+        }
       }
       post {
         always {
@@ -34,32 +45,36 @@ pipeline {
     }
 
     stage('Build Docker Image') {
-  
       steps {
         script {
-          // Build from Dockerfile at repo root
-          dockerImage = docker.build("${DOCKER_HUB_REPO}:${env.IMAGE_TAG}")
+          dockerImage = docker.build("index.docker.io/${DOCKER_HUB_REPO}:${env.IMAGE_TAG}")
+        }
+      }
+    }
+
+    stage('Test Docker Hub Login') {
+      steps {
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+            if (isUnix()) {
+              sh 'echo "✅ Successfully logged in to Docker Hub"'
+            } else {
+              bat 'echo ✅ Successfully logged in to Docker Hub'
+            }
+          }
         }
       }
     }
 
     stage('Push to Docker Hub') {
-    steps {
-    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}",
-                                      usernameVariable: 'DOCKER_USER',
-                                      passwordVariable: 'DOCKER_PASS')]) {
-      script {
-        bat """
-          echo %DOCKER_PASS% |docker login -u %DOCKER_USER% --password-stdin
-          docker push ${DOCKER_HUB_REPO}:${env.IMAGE_TAG}
-        """
+      steps {
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
+            dockerImage.push(env.IMAGE_TAG) // push with build tag
+          }
+        }
       }
     }
-  }
-}
-
-
-
   }
 
   post {
@@ -67,8 +82,13 @@ pipeline {
       echo "✅ Pushed ${DOCKER_HUB_REPO}:${env.IMAGE_TAG} and :latest"
     }
     cleanup {
-      // keep the node tidy
-      bat 'docker image prune -f || true'
+      script {
+        if (isUnix()) {
+          sh 'docker image prune -f || true'
+        } else {
+          bat 'docker image prune -f || true'
+        }
+      }
     }
   }
 }

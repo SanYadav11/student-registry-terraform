@@ -1,0 +1,74 @@
+// Jenkinsfile (Maven)
+pipeline {
+  agent any
+
+  environment {
+    DOCKER_HUB_REPO        = 'santuk/student-registry'   // <-- change
+    DOCKER_HUB_CREDENTIALS = 'dockerhub-credentials'               // <-- matches your Jenkins cred ID
+  }
+
+ 
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+        script {
+          // Short git SHA for tagging
+          env.GIT_SHA = bat(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+          env.IMAGE_TAG = "0.0." + "${env.BUILD_NUMBER}-" + "SNAPSHOT"     
+       }
+      }
+    }
+
+    stage('Build & Test (Maven)') {
+      steps {
+        bat 'mvn -B -DskipTests=false clean verify'   // runs JUnit tests; fails the build if tests fail
+      }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+          archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
+      }
+    }
+
+    stage('Build Docker Image') {
+  
+      steps {
+        script {
+          // Build from Dockerfile at repo root
+          dockerImage = docker.build("${DOCKER_HUB_REPO}:${env.IMAGE_TAG}")
+        }
+      }
+    }
+
+    stage('Push to Docker Hub') {
+    steps {
+    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}",
+                                      usernameVariable: 'DOCKER_USER',
+                                      passwordVariable: 'DOCKER_PASS')]) {
+      script {
+        bat """
+          echo %DOCKER_PASS% |docker login -u %DOCKER_USER% --password-stdin
+          docker push ${DOCKER_HUB_REPO}:${env.IMAGE_TAG}
+        """
+      }
+    }
+  }
+}
+
+
+
+  }
+
+  post {
+    success {
+      echo "✅ Pushed ${DOCKER_HUB_REPO}:${env.IMAGE_TAG} and :latest"
+    }
+    cleanup {
+      // keep the node tidy
+      bat 'docker image prune -f || true'
+    }
+  }
+}
