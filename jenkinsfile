@@ -50,9 +50,8 @@ pipeline {
                                       passwordVariable: 'DOCKER_PASS')]) {
       script {
         bat """
-          docker login -u santuk -p dckr_pat_jXhXQa8DVcg5pj6xy4i_vAUCoEw
+          echo %DOCKER_PASS% |docker login -u %DOCKER_USER% --password-stdin
           docker push ${DOCKER_HUB_REPO}:${env.IMAGE_TAG}
-          docker push ${DOCKER_HUB_REPO}:latest
         """
       }
     }
