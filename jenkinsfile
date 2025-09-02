@@ -43,13 +43,12 @@ pipeline {
       }
     }
 
-      stage('Push to Docker Hub') {
-  steps {
-    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS,
-                                      usernameVariable: 'santuk',
-                                      passwordVariable: 'dckr_pat_jXhXQa8DVcg5pj6xy4i_vAUCoEw')]) {
+    stage('Push to Docker Hub') {
+    steps {
+    withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}",
+                                      usernameVariable: 'DOCKER_USER',
+                                      passwordVariable: 'DOCKER_PASS')]) {
       script {
-        // safer login for Windows
         bat """
           echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
           docker push ${DOCKER_HUB_REPO}:${env.IMAGE_TAG}
@@ -59,6 +58,7 @@ pipeline {
     }
   }
 }
+
 
 
   }
