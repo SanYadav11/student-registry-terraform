@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_ID = "student-registry-466814"
+        PROJECT_ID = "YOUR_PROJECT_ID"
         REGION = "us-central1"
         REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
-        PATH = "$PATH:C:\\Terraform"
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key')
+        PATH = "$PATH:C:\\Program Files\\Terraform"
     }
 
     stages {

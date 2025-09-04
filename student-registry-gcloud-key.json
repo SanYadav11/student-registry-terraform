@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "student-registry-466814",
+  "private_key_id": "1b7ac9474905b37ec8d64e61f8ead9f1dc797636",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC8I7nk3CnFTlBZ\nT0KsdzFZVLW+UevBQb5sC6cy9TXCNJ6+wxZi0FniV1wIK4ITLw7wN5R3mzMd1svZ\noA7IffieuOBZbyBni/LliHdhk1+868EAg6b2abO9fRR2cOMWNCxCrja0ibTNW+Zm\nZHS/ecD4uZc5opOIS5PrLBlrTC4lKFstdjuY4xa8mLJSrMw5g45YFbeHvnrxAyOD\n8f95/j3JfrIKXHCnEMgU4XnKQM/xkWWlQxjY2Qb5TafltFRg9RZAtHkibXHIq1HI\npUiRRcoiWZgE/BSW7D+aKju0KJjUBNy2SifEj/AbZ6HwsCEyH2yAdzyXRH+tBXDl\nRh6T2wORAgMBAAECggEAKmnpchE6L3tovMGUF9plGyzwLgA85FwEaEo2PtQt8uK2\n+O11IgCzisXD/ymD0PxWY0w8YbxwySTP3vdo7cUMZAfst+zIAt/3ecyKkUpOloIV\niB6l6L5KoYjNsKfhYfOQGNY6iffTdUpnBiVWdoYlvUzlrT4cAWl8ZtORxXEuo/xx\n++hy/0WhhgNt3pclp8t5ricEpmBYZTYCs3F8fopMlRZez565vsnFA6T5Ykrn6Buo\ne2WVEDTB5XFdK4nKI2xpTXfCCFFYafNmVsnNqKlCPjrq0YzxnQTjKVpuD4v7hY1G\nNw5YhSmpYspwV/djKr3XiVTJ7Zzl6pYfFmfl4aoKWQKBgQD2FEohajcq23DzKhtw\npDxYtzR21rQlZpEzGK0MPbNSyGIlFX1L2LyXYbIcUx8196btsaVbVEU2hvdh6KBL\n46KPyM9JsuovnbXet/S/FUxsCti+1pq2NnstUE/C2A/30i+1UozdC5z189/1UYf3\nBNRqGtFhj5YOBIho/anBDsYO5QKBgQDDuXVPpmrTq8VokwjBQE21JTijD0P33E8P\npLJqXi3x4pue/FAi7zT2IrqP8YIGC6G8fPwWW5xG216j9Jaxs+tbAVm6S0ilNp1R\njR0ILB+TWNUirMKSNieeVvW2Pdi5p4kkyOle7zbxK83dQIMRwIfDH7xgWwCFrhEs\nzWvK1fUrPQKBgFvdgzcqQeIb/fSpWYkZpvWvn0RmLuZvffFHWwLg3dsft5QEi7wO\n84jIDggI9/PbulOuJ/8KXLRYem3wvDbYik2HN+tZgZe5FrZIknPrbZZADl5gG22+\ntQlbnAsvQfbQXsMgSDoVJcmj+43HnCyZfvsFe/kh83DUPGCFoiPSchoJAoGAMLin\n5S3uBccKmx+O3Fxfe6pKUPzp1Hd5DtHWv/e1xDK+vnLcl/Wn32WBv3dFALBAkKUk\nM4SWgGT3SCUIpi+9dKf/aAp5iPbxbm2MPo6NRaalV75dqPvmHNpUzArVOlHkJ84D\nmeg+awaWdm8qsW6V3RK3V90PYjeUeuyf2pwsLZkCgYBlUSD0mGMzamUgR1JHH3wZ\nhDXJXlKTwx3KlBxoLjZpHBAFgrBmHhNZRBzRKM7/mlEI1bZALdbWKEXfGgPm/Hr2\np+554v8+RvEyLJg6E8nodg25kR+YmdXM1jPpeJh0gb5T+uRX4ECozS6mtE9m8f8q\nY0Sib5x0QRI3GfiSiCbvtA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "jenkins-deployer@student-registry-466814.iam.gserviceaccount.com",
+  "client_id": "114033480117798717490",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jenkins-deployer%40student-registry-466814.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
