@@ -4,7 +4,7 @@ pipeline {
     environment {
         PROJECT_ID = "student-registry-466814"
         REGION = "us-central1"
-        REPO = "myrepo"
+        REPO = "repo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
@@ -17,6 +17,14 @@ pipeline {
                 checkout scm
             }
         }
+
+    stage('Build & Test (Maven)') {
+      steps {
+        script {
+            bat 'mvn -B -DskipTests=false clean verify'
+          }
+        }
+       }
 
         stage('Build Docker Image') {
             steps {
