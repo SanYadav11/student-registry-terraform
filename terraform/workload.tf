@@ -17,7 +17,7 @@ resource "kubernetes_deployment" "app" {
           name  = "myapp"
           image = local.image_ref
           port {
-            container_port = 8080
+            container_port = 9091
           }
           resources {
             requests = { cpu = "250m", memory = "256Mi" }
@@ -35,8 +35,8 @@ resource "kubernetes_service" "app_svc" {
     selector = { app = "myapp" }
     type     = "LoadBalancer"
     port {
-      port        = 80
-      target_port = 8080
+      port        = 9091
+      target_port = 9091
     }
   }
 }
