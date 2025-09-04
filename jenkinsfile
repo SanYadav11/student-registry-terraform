@@ -4,7 +4,7 @@ pipeline {
     environment {
         PROJECT_ID = "student-registry-466814"
         REGION = "us-central1"
-        REPO = "repo"
+        REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
@@ -15,6 +15,20 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+   stage('Terraform Infra Setup') {
+            steps {
+                dir("terraform/infra") {
+                    script {
+                        bat '''
+                            gcloud auth activate-service-account --key-file=%GOOGLE_APPLICATION_CREDENTIALS%
+                            terraform init
+                            terraform apply -auto-approve -var project_id=%PROJECT_ID%
+                        '''
+                    }
+                }
             }
         }
 
@@ -46,9 +60,9 @@ pipeline {
             }
         }
 
-        stage('Terraform Init & Apply') {
+        stage('Terraform Deploy Workload') {
             steps {
-                dir("terraform") {
+                dir("terraform/workload") {
                     script {
                         bat '''
                             gcloud auth activate-service-account --key-file=%GOOGLE_APPLICATION_CREDENTIALS%
