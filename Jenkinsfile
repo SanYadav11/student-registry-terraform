@@ -7,7 +7,6 @@ pipeline {
         REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
         PATH = "$PATH:C:\\Terraform"
     }
 
@@ -18,12 +17,11 @@ pipeline {
             }
         }
 
-   stage('Terraform Infra Setup') {
+        stage('Terraform Infra Setup') {
             steps {
                 dir("terraform/infra") {
-                    script {
+                    withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
                         bat '''
-                            gcloud auth activate-service-account --key-file=%GOOGLE_APPLICATION_CREDENTIALS%
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID%
                         '''
@@ -32,27 +30,22 @@ pipeline {
             }
         }
 
-    stage('Build & Test (Maven)') {
-      steps {
-        script {
-            bat 'mvn -B -DskipTests=false clean verify'
-          }
+        stage('Build & Test (Maven)') {
+            steps {
+                bat 'mvn -B -DskipTests=false clean verify'
+            }
         }
-       }
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    bat "docker build -t %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG% ."
-                }
+                bat "docker build -t %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG% ."
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
+                withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
                     bat '''
-                        gcloud auth activate-service-account --key-file=%GOOGLE_APPLICATION_CREDENTIALS%
                         gcloud auth configure-docker %REGION%-docker.pkg.dev -q
                         docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG%
                     '''
@@ -63,9 +56,8 @@ pipeline {
         stage('Terraform Deploy Workload') {
             steps {
                 dir("terraform/workload") {
-                    script {
+                    withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
                         bat '''
-                            gcloud auth activate-service-account --key-file=%GOOGLE_APPLICATION_CREDENTIALS%
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID% -var image_tag=%IMAGE_TAG%
                         '''
