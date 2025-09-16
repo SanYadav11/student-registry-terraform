@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_ID = "student-registry-466814"
+        PROJECT_ID = "student-registry-kub-jenkins"
         REGION = "us-central1"
         REPO = "myrepo"
         IMAGE = "myapp"
