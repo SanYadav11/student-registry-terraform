@@ -7,7 +7,8 @@ pipeline {
         REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        PATH = "$PATH:C:\\Terraform"
+        PATH = "C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin;C:\\Terraform;$PATH"
+
     }
 
     stages {
