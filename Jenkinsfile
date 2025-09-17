@@ -7,7 +7,7 @@ pipeline {
         REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        GCLOUD = '"C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.exe"'
+        GCLOUD = "C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.exe"
         PATH = "C:\\Terraform;$PATH"
     }
 
