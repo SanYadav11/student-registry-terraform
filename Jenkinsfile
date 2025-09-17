@@ -20,7 +20,7 @@ pipeline {
         stage('Terraform Infra Setup') {
             steps {
                 dir("terraform/infra") {
-                    withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
+                    withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
                         bat '''
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID%
@@ -44,7 +44,7 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
+                withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
                     bat '''
                         gcloud auth configure-docker %REGION%-docker.pkg.dev -q
                         docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG%
@@ -56,7 +56,7 @@ pipeline {
         stage('Terraform Deploy Workload') {
             steps {
                 dir("terraform/workload") {
-                    withGoogleOAuth(credentialsId: 'gcp-service-account-key') {
+                    withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
                         bat '''
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID% -var image_tag=%IMAGE_TAG%
