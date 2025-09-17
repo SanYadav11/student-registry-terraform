@@ -20,7 +20,7 @@ pipeline {
         stage('Terraform Infra Setup') {
             steps {
                 dir("terraform/infra") {
-                    withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
+                    withGCP(credentialsId: 'gcp-service-account-key', projectId: 'student-registry-kub-jenkins') {
                         bat '''
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID%
@@ -44,7 +44,7 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
+                withGCP(credentialsId: 'gcp-service-account-key', projectId: 'student-registry-kub-jenkins') {
                     bat '''
                         gcloud auth configure-docker %REGION%-docker.pkg.dev -q
                         docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG%
@@ -56,7 +56,7 @@ pipeline {
         stage('Terraform Deploy Workload') {
             steps {
                 dir("terraform/workload") {
-                    withGCP(credentialsId: 'gcp-service-account-key', projectId: %PROJECT_ID%) {
+                    withGCP(credentialsId: 'gcp-service-account-key', projectId: 'student-registry-kub-jenkins') {
                         bat '''
                             terraform init
                             terraform apply -auto-approve -var project_id=%PROJECT_ID% -var image_tag=%IMAGE_TAG%
