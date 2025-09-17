@@ -18,11 +18,6 @@ pipeline {
             }
         }
         
-        stage('Check gcloud') {
-          steps {
-               bat '%GCLOUD% --version'
-             }
-        } 
 
         stage('Terraform Infra Setup') {
             steps {
