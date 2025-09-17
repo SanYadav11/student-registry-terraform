@@ -7,8 +7,8 @@ pipeline {
         REPO = "myrepo"
         IMAGE = "myapp"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
-        PATH = "C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin;C:\\Terraform;$PATH"
-
+        GCLOUD = '"C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.exe"'
+        PATH = "C:\\Terraform;$PATH"
     }
 
     stages {
@@ -17,6 +17,12 @@ pipeline {
                 checkout scm
             }
         }
+        
+        stage('Check gcloud') {
+          steps {
+               bat '%GCLOUD% --version'
+             }
+        } 
 
         stage('Terraform Infra Setup') {
             steps {
@@ -47,7 +53,7 @@ pipeline {
             steps {
                 withGCP(credentialsId: 'gcp-service-account-key') {
                     bat '''
-                        gcloud auth configure-docker %REGION%-docker.pkg.dev -q
+                        ${GCLOUD} auth configure-docker %REGION%-docker.pkg.dev -q
                         docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG%
                     '''
                 }
