@@ -10,9 +10,19 @@ pipeline {
         GCLOUD = "C:\\Program Files (x86)\\Google\\Cloud SDK\\google-cloud-sdk\\bin\\gcloud.exe"
         PATH = "C:\\Terraform;$PATH"
     }
+    
+    tools {
+    customTool 'gcloud'
+}
 
     stages {
-        stage('Checkout') {
+		
+		stage('Check gcloud') {
+          steps {
+            bat '"%gcloud%\\bin\\gcloud.exe" --version'
+          }
+      }
+      stage('Checkout') {
             steps {
                 checkout scm
             }
