@@ -18,7 +18,7 @@ pipeline {
 		
 		stage('Check gcloud') {
           steps {
-            bat '"%gcloud%\\gcloud.exe" --version'
+            bat "%gcloud%\\gcloud.exe" --version
           }
       }
       stage('Checkout') {
