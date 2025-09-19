@@ -18,7 +18,7 @@ pipeline {
 		
 		stage('Check gcloud') {
           steps {
-            bat '%gcloud%\\gcloud.exe --version'
+            bat 'gcloud --version'
           }
       }
       stage('Checkout') {
@@ -57,7 +57,7 @@ pipeline {
             steps {
                 withGCP(credentialsId: 'gcp-service-account-key') {
                     bat '''
-                        ${GCLOUD} auth configure-docker %REGION%-docker.pkg.dev -q
+                        gcloud auth configure-docker %REGION%-docker.pkg.dev -q
                         docker push %REGION%-docker.pkg.dev/%PROJECT_ID%/%REPO%/%IMAGE%:%IMAGE_TAG%
                     '''
                 }
