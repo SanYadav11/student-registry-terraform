@@ -10,9 +10,6 @@ pipeline {
         PATH = "C:\\Terraform;$PATH"
     }
     
-    tools {
-    gcloud 'gcloud'
-}
 
     stages {
 		
