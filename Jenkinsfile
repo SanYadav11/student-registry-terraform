@@ -10,6 +10,8 @@ pipeline {
         PATH = "C:\\Terraform;$PATH"
     }
     
+    tools { gcloud 'GoogleCloudSDK' }
+    
 
     stages {
 		
