@@ -11,21 +11,21 @@ pipeline {
     }
     
 
-    
+    stages {
+		
+		
       stage('Checkout') {
             steps {
                 checkout scm
             }
         }
         
-        stages {
-		
-		 stage('Check gcloud') {
-           steps {
-			bat 'where gcloud'
+        stage('Check gcloud') {
+          steps {
             bat 'gcloud --version'
           }
       }
+        
 
         stage('Terraform Infra Setup') {
             steps {
