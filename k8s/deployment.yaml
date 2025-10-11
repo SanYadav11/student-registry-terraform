@@ -16,7 +16,7 @@ spec:
         - name: springboot
           image: GCR_IMAGE_PLACEHOLDER
           ports:
-            - containerPort: 8080
+            - containerPort: 9091
           env:
             - name: JAVA_OPTS
               value: "-Xms512m -Xmx1024m"

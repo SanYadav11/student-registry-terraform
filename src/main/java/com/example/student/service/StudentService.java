@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 import com.example.student.model.Student;
 import com.example.student.repo.StudentRepository;
 
-
+/*
+ * This Service is to fetch Student details
+ * 
+ */
 
 @Service
 public class StudentService {
