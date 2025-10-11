@@ -30,7 +30,9 @@ steps:
       kubectl apply -f k8s/deployment.yaml
       kubectl apply -f k8s/service.yaml
 
-# Optional: set substitutions & timeout
+options:
+  logging: CLOUD_LOGGING_ONLY
+ # Optional: set substitutions & timeout
 substitutions:
   _ARTIFACT_REPO: "springboot-artifacts"  # override if needed
   _IMAGE_NAME: "springboot-app"
