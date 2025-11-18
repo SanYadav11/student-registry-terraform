@@ -1,2 +1,30 @@
 gcloud auth application-default login
 gcloud config set project <YOUR_PROJECT_ID>
+
+terraform init -out = tfplan
+terraform apply tfplan
+
+gcloud container clusters list
+gcloud artifacts repositories list
+
+student-registry-kub-jenkins:us-central1:mysql-student-registry
+
+student-registry-466814:us-central1:student-mysql-repo
+
+
+gcloud container clusters get-credentials ${_GKE_CLUSTER} --zone ${_GKE_ZONE} --project ${PROJECT_ID}
+
+gcloud container clusters get-credentials demo-gke-cluster --zone us-central1-a  --project student-registry-kub-jenkins
+
+
+kubectl get pods
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+
+kubectl delete deployment springboot-deployment // delete all pods as pods managed by deployment
+kubectl delete pod <pod-name>  // delete only provided pod
+kubectl delete pods --all // delete all pods
+
+kubectl delete pod <name> --force --grace-period=0  // forcefull delete
+
+terraform destroy -auto-approve
