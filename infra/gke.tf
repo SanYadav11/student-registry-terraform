@@ -10,7 +10,10 @@ resource "google_container_cluster" "primary" {
     ]
   }
 
-  # optional: enable basic auth/kubelet certs off for security in production
-  remove_default_node_pool = false
-  # For production consider using node_pools + autopilot / private cluster
+ monitoring_config {
+    managed_prometheus {
+      enabled = true
+    }
+  }
+
 }
