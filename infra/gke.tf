@@ -9,11 +9,4 @@ resource "google_container_cluster" "primary" {
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
-
- monitoring_config {
-    managed_prometheus {
-      enabled = true
-    }
-  }
-
 }

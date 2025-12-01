@@ -10,7 +10,11 @@ spec:
   template:
     metadata:
       labels:
-        app: springboot-app
+        app: springboot-app 
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9091"
+        prometheus.io/path: "/actuator/prometheus"	
     spec:
       containers:
         - name: springboot
@@ -20,3 +24,14 @@ spec:
           env:
             - name: JAVA_OPTS
               value: "-Xms512m -Xmx1024m"
+
+
+
+
+
+
+monitoring_config {
+    managed_prometheus {
+      enabled = true
+    }
+  }
